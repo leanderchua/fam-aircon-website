@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="description" content="FAM Air Conditioning Supply — Industrial HVAC solutions for commercial and residential excellence.">
+  <title>FAM Airconditioning Supply - Cool Air. Cool Life.</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#00164e',
+            secondary: '#0051d5',
+            'secondary-light': '#b4c5ff',
+            cta: '#f97316',
+            'cta-hover': '#ea580c',
+            surface: '#f7f9fb',
+            'surface-dim': '#e6e8ea',
+            'surface-bright': '#ffffff',
+            'on-surface': '#191c1e',
+            'on-surface-variant': '#45464d',
+            'outline-variant': '#c6c6cd',
+            outline: '#76777d',
+          },
+          fontFamily: {
+            display: ['Inter', 'system-ui', 'sans-serif'],
+            body: ['Inter', 'system-ui', 'sans-serif'],
+            label: ['JetBrains Mono', 'monospace'],
+          },
+          maxWidth: {
+            container: '1280px',
+          },
+          borderRadius: {
+            DEFAULT: '0.125rem',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1;
+    }
+  </style>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-surface text-on-surface font-body text-base antialiased selection:bg-secondary selection:text-white">
+
+  <!-- NAV -->
+  <header class="bg-white border-b border-outline-variant fixed w-full top-0 z-50" id="nav">
+    <div class="flex justify-between items-center w-full px-4 md:px-12 max-w-container mx-auto h-20">
+      <div class="flex items-center gap-4">
+        <img alt="FAM Airconditioning Supply Logo" class="h-12 w-auto object-contain" src="images/logo.png">
+        <span class="text-2xl font-extrabold text-primary hidden md:block tracking-tight font-display">FAM Airconditioning Supply</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-8 text-base font-body" id="navMenu">
+        <a class="nav-link text-secondary border-b-2 border-secondary pb-1 transition-colors duration-200" href="#home">Home</a>
+        <a class="nav-link text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#about">About</a>
+        <a class="nav-link text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#services">Services</a>
+        <a class="nav-link text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#projects">Projects</a>
+        <a class="nav-link text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#contact">Contact</a>
+      </nav>
+      <a class="hidden md:inline-flex items-center justify-center px-6 py-3 bg-cta text-white font-label text-xs font-semibold uppercase tracking-widest hover:bg-cta-hover transition-colors" href="#contact">Get a Quote</a>
+      <button class="md:hidden text-primary p-2" id="navToggle" aria-label="Toggle menu">
+        <span class="material-symbols-outlined text-3xl">menu</span>
+      </button>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="hidden md:hidden bg-white border-t border-outline-variant px-4 pb-6 pt-2" id="mobileMenu">
+      <a class="block py-3 text-on-surface-variant hover:text-secondary font-body" href="#home">Home</a>
+      <a class="block py-3 text-on-surface-variant hover:text-secondary font-body" href="#about">About</a>
+      <a class="block py-3 text-on-surface-variant hover:text-secondary font-body" href="#services">Services</a>
+      <a class="block py-3 text-on-surface-variant hover:text-secondary font-body" href="#projects">Projects</a>
+      <a class="block py-3 text-on-surface-variant hover:text-secondary font-body" href="#contact">Contact</a>
+      <a class="block mt-4 text-center px-6 py-3 bg-cta text-white font-label text-xs font-semibold uppercase tracking-widest hover:bg-cta-hover" href="#contact">Get a Quote</a>
+    </div>
+  </header>
+
+  <main class="pt-20">
+
+    <!-- HERO -->
+    <section class="relative min-h-[600px] flex items-center bg-white border-b border-outline-variant" id="home">
+      <div class="absolute inset-0 w-full h-full">
+        <div class="bg-cover bg-center w-full h-full opacity-30 grayscale" style="background-image: url('https://images.unsplash.com/photo-1615309662243-70f6df917b59?w=1600&h=900&fit=crop&q=80')"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent"></div>
+      </div>
+      <div class="relative w-full px-4 md:px-12 max-w-container mx-auto py-24">
+        <div class="max-w-2xl grid gap-6">
+          <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase flex items-center gap-2">
+            <span class="w-8 h-px bg-secondary"></span>
+            Industrial HVAC Systems
+          </span>
+          <h1 class="font-display text-5xl md:text-[56px] leading-tight font-extrabold text-primary tracking-tight">
+            Cool Air. <br><span class="text-secondary">Cool Life.</span>
+          </h1>
+          <p class="text-xl font-medium text-on-surface-variant max-w-xl leading-relaxed">
+            Industrial-grade HVAC solutions for commercial and residential excellence. Engineered for reliability, built for scale.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 mt-8">
+            <a class="inline-flex items-center justify-center px-8 py-4 bg-cta text-white font-label text-xs font-semibold uppercase tracking-[0.15em] hover:bg-cta-hover transition-colors text-center" href="#contact">Schedule Consultation</a>
+            <a class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-primary font-label text-xs font-semibold uppercase tracking-[0.15em] hover:bg-surface-dim transition-colors border border-outline text-center" href="#projects">View Projects</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="bg-primary text-white py-12 border-b border-outline-variant">
+      <div class="px-4 md:px-12 max-w-container mx-auto">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x md:divide-white/20">
+          <div class="text-center px-4">
+            <div class="text-4xl md:text-[40px] font-extrabold font-display mb-2 stat-val" data-target="500">0<span class="text-secondary-light">+</span></div>
+            <div class="font-label text-xs font-semibold uppercase tracking-[0.15em] text-white/70">Projects Completed</div>
+          </div>
+          <div class="text-center px-4">
+            <div class="text-4xl md:text-[40px] font-extrabold font-display mb-2 stat-val" data-target="10">0<span class="text-secondary-light">+</span></div>
+            <div class="font-label text-xs font-semibold uppercase tracking-[0.15em] text-white/70">Years Experience</div>
+          </div>
+          <div class="text-center px-4">
+            <div class="text-4xl md:text-[40px] font-extrabold font-display mb-2">50<span class="text-secondary-light">+</span></div>
+            <div class="font-label text-xs font-semibold uppercase tracking-[0.15em] text-white/70">Commercial Clients</div>
+          </div>
+          <div class="text-center px-4">
+            <div class="text-4xl md:text-[40px] font-extrabold font-display mb-2">24/7</div>
+            <div class="font-label text-xs font-semibold uppercase tracking-[0.15em] text-white/70">Technical Support</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="py-24 bg-surface border-b border-outline-variant" id="about">
+      <div class="px-4 md:px-12 max-w-container mx-auto grid md:grid-cols-2 gap-6 items-center">
+        <div class="relative h-[500px] border border-outline-variant p-2 bg-white">
+          <div class="bg-cover bg-center w-full h-full grayscale hover:grayscale-0 transition-all duration-500" style="background-image: url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=700&h=500&fit=crop&q=80')"></div>
+        </div>
+        <div class="grid gap-6 md:pl-12">
+          <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase">About Us</span>
+          <h2 class="text-3xl font-bold font-display text-primary leading-tight">Engineered for Reliability.</h2>
+          <p class="text-lg text-on-surface-variant leading-relaxed">
+            At FAM Airconditioning Supply, we don't just sell equipment — we deliver climate control infrastructure. With over a decade of specialized experience in high-capacity HVAC systems, our team of certified engineers ensures every installation meets rigorous industrial standards.
+          </p>
+          <p class="text-base text-on-surface-variant">
+            Our commitment to excellence spans from initial load calculation and system design to meticulous installation and rigorous preventive maintenance. We partner with top-tier manufacturers — Carrier, Mitsubishi Electric, and Daikin — to provide robust, energy-efficient cooling solutions.
+          </p>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            <li class="flex items-center gap-3 text-primary"><span class="material-symbols-outlined text-secondary">check_circle</span>Certified Engineers</li>
+            <li class="flex items-center gap-3 text-primary"><span class="material-symbols-outlined text-secondary">check_circle</span>Turnkey Solutions</li>
+            <li class="flex items-center gap-3 text-primary"><span class="material-symbols-outlined text-secondary">check_circle</span>Direct Procurement</li>
+            <li class="flex items-center gap-3 text-primary"><span class="material-symbols-outlined text-secondary">check_circle</span>Lifecycle Management</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="py-24 bg-white border-b border-outline-variant" id="services">
+      <div class="px-4 md:px-12 max-w-container mx-auto">
+        <div class="text-center mb-16 max-w-3xl mx-auto">
+          <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase block mb-4">Core Capabilities</span>
+          <h2 class="text-3xl font-bold font-display text-primary mb-6">Comprehensive HVAC Services</h2>
+          <p class="text-lg text-on-surface-variant">End-to-end climate control solutions engineered for maximum efficiency, operational stability, and long-term reliability.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="group border border-outline-variant bg-surface p-8 hover:border-secondary transition-colors duration-300 cursor-pointer">
+            <div class="w-14 h-14 bg-surface-dim flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors duration-300">
+              <span class="material-symbols-outlined text-3xl">inventory_2</span>
+            </div>
+            <h3 class="text-xl font-semibold font-display text-primary mb-4">AC Supply & Procurement</h3>
+            <p class="text-on-surface-variant">Direct sourcing of industrial-grade split-type, cassette, VRF systems, and air handlers from Carrier, Mitsubishi Electric, and Daikin.</p>
+          </div>
+          <div class="group border border-outline-variant bg-surface p-8 hover:border-secondary transition-colors duration-300 cursor-pointer">
+            <div class="w-14 h-14 bg-surface-dim flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors duration-300">
+              <span class="material-symbols-outlined text-3xl">construction</span>
+            </div>
+            <h3 class="text-xl font-semibold font-display text-primary mb-4">Professional Installation</h3>
+            <p class="text-on-surface-variant">Rigorous, code-compliant installation by certified technicians. We manage complex ducting, piping, and electrical integration.</p>
+          </div>
+          <div class="group border border-outline-variant bg-surface p-8 hover:border-secondary transition-colors duration-300 cursor-pointer">
+            <div class="w-14 h-14 bg-surface-dim flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors duration-300">
+              <span class="material-symbols-outlined text-3xl">settings_suggest</span>
+            </div>
+            <h3 class="text-xl font-semibold font-display text-primary mb-4">Preventive Maintenance</h3>
+            <p class="text-on-surface-variant">Structured PMS schedules to optimize performance, extend equipment lifespan, and prevent costly operational downtime.</p>
+          </div>
+          <div class="group border border-outline-variant bg-surface p-8 hover:border-secondary transition-colors duration-300 cursor-pointer">
+            <div class="w-14 h-14 bg-surface-dim flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors duration-300">
+              <span class="material-symbols-outlined text-3xl">build</span>
+            </div>
+            <h3 class="text-xl font-semibold font-display text-primary mb-4">Repair & Troubleshooting</h3>
+            <p class="text-on-surface-variant">Rapid-response technical intervention. Advanced diagnostic protocols to identify and resolve systemic issues swiftly.</p>
+          </div>
+          <div class="group border border-outline-variant bg-surface p-8 hover:border-secondary transition-colors duration-300 cursor-pointer">
+            <div class="w-14 h-14 bg-surface-dim flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors duration-300">
+              <span class="material-symbols-outlined text-3xl">architecture</span>
+            </div>
+            <h3 class="text-xl font-semibold font-display text-primary mb-4">System Design & Consultation</h3>
+            <p class="text-on-surface-variant">Engineering-led heat load calculations and custom ductwork design to guarantee optimal airflow and energy efficiency.</p>
+          </div>
+          <div class="group border border-outline-variant bg-surface p-8 hover:border-secondary transition-colors duration-300 cursor-pointer">
+            <div class="w-14 h-14 bg-surface-dim flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors duration-300">
+              <span class="material-symbols-outlined text-3xl">support_agent</span>
+            </div>
+            <h3 class="text-xl font-semibold font-display text-primary mb-4">After-Sales Support</h3>
+            <p class="text-on-surface-variant">Dedicated account management and 24/7 technical support to ensure continuous operational confidence post-installation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="py-24 bg-surface border-b border-outline-variant" id="projects">
+      <div class="px-4 md:px-12 max-w-container mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+          <div class="max-w-2xl">
+            <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase block mb-4">Portfolio</span>
+            <h2 class="text-3xl font-bold font-display text-primary">Featured Deployments</h2>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="group border border-outline-variant bg-white p-4 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+            <div class="aspect-video relative overflow-hidden bg-surface-dim mb-6">
+              <img src="https://images.unsplash.com/photo-1614447413576-b346c641c128?w=800&h=450&fit=crop&q=80" alt="Commercial HVAC installation at One Wilson Square" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" loading="lazy">
+            </div>
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-xl font-semibold font-display text-primary mb-2">One Wilson Square</h3>
+                <p class="text-sm text-on-surface-variant">Complete VRF System Installation</p>
+              </div>
+              <span class="px-3 py-1 bg-surface font-label text-xs font-semibold text-primary border border-outline-variant uppercase tracking-wider">Commercial</span>
+            </div>
+          </div>
+          <div class="group border border-outline-variant bg-white p-4 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+            <div class="aspect-video relative overflow-hidden bg-surface-dim mb-6">
+              <img src="https://images.unsplash.com/photo-1667983453881-4992fe86ab1b?w=800&h=450&fit=crop&q=80" alt="HVAC system at FEU-NRMF Medical Center" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" loading="lazy">
+            </div>
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-xl font-semibold font-display text-primary mb-2">FEU-NRMF Medical Center</h3>
+                <p class="text-sm text-on-surface-variant">Multi-floor AC System</p>
+              </div>
+              <span class="px-3 py-1 bg-surface font-label text-xs font-semibold text-primary border border-outline-variant uppercase tracking-wider">Commercial</span>
+            </div>
+          </div>
+          <div class="group border border-outline-variant bg-white p-4 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+            <div class="aspect-video relative overflow-hidden bg-surface-dim mb-6">
+              <img src="https://images.unsplash.com/photo-1698479603408-1a66a6d9e80f?w=800&h=450&fit=crop&q=80" alt="Residential AC installation" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" loading="lazy">
+            </div>
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-xl font-semibold font-display text-primary mb-2">St. Joseph Building</h3>
+                <p class="text-sm text-on-surface-variant">VRF System & Ducting</p>
+              </div>
+              <span class="px-3 py-1 bg-surface font-label text-xs font-semibold text-primary border border-outline-variant uppercase tracking-wider">Commercial</span>
+            </div>
+          </div>
+          <div class="group border border-outline-variant bg-white p-4 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+            <div class="aspect-video relative overflow-hidden bg-surface-dim mb-6">
+              <img src="https://images.unsplash.com/photo-1583954964358-1bd7215b6f7a?w=800&h=450&fit=crop&q=80" alt="Residential split-type AC maintenance" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" loading="lazy">
+            </div>
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-xl font-semibold font-display text-primary mb-2">Private Residence Portfolio</h3>
+                <p class="text-sm text-on-surface-variant">Split-Type & Cassette Installations</p>
+              </div>
+              <span class="px-3 py-1 bg-surface font-label text-xs font-semibold text-primary border border-outline-variant uppercase tracking-wider">Residential</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="py-24 bg-white" id="contact">
+      <div class="px-4 md:px-12 max-w-container mx-auto grid md:grid-cols-2 gap-12">
+        <div>
+          <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase block mb-4">Get Started</span>
+          <h2 class="text-3xl font-bold font-display text-primary mb-6">Request a Technical Proposal</h2>
+          <p class="text-on-surface-variant mb-12">Contact our engineering team to discuss your project requirements, request a site survey, or obtain detailed equipment specifications.</p>
+          <div class="grid gap-8">
+            <div class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-secondary text-3xl mt-1">location_on</span>
+              <div>
+                <h4 class="font-semibold text-primary mb-1">Office Address</h4>
+                <p class="text-on-surface-variant">123 Sample Street, Quezon City<br>Metro Manila, Philippines</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-secondary text-3xl mt-1">call</span>
+              <div>
+                <h4 class="font-semibold text-primary mb-1">Phone</h4>
+                <p class="text-on-surface-variant">(0917) 000 0000</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-secondary text-3xl mt-1">mail</span>
+              <div>
+                <h4 class="font-semibold text-primary mb-1">Email</h4>
+                <p class="text-on-surface-variant">info@famaircon.com</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-secondary text-3xl mt-1">schedule</span>
+              <div>
+                <h4 class="font-semibold text-primary mb-1">Operating Hours</h4>
+                <p class="text-on-surface-variant">Mon – Sat: 8:00 AM – 5:00 PM<br>Emergency Support: 24/7</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-surface border border-outline-variant p-8 relative">
+          <div class="absolute top-0 left-0 w-full h-1 bg-cta"></div>
+          <form class="grid gap-6" id="contactForm">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Full Name</label>
+                <input class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" placeholder="Juan Dela Cruz" type="text" required>
+              </div>
+              <div>
+                <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Phone</label>
+                <input class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" placeholder="(0917) 123 4567" type="tel">
+              </div>
+            </div>
+            <div>
+              <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Email Address</label>
+              <input class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" placeholder="juan@email.com" type="email" required>
+            </div>
+            <div>
+              <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Service Needed</label>
+              <select class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" required>
+                <option value="" disabled selected>Select a service</option>
+                <option>AC Supply & Procurement</option>
+                <option>Professional Installation</option>
+                <option>Preventive Maintenance</option>
+                <option>Repair & Troubleshooting</option>
+                <option>System Design & Consultation</option>
+                <option>After-Sales Support</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Project Details</label>
+              <textarea class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" placeholder="Building size, current system, timeline..." rows="4"></textarea>
+            </div>
+            <button class="w-full bg-cta text-white font-label text-xs font-semibold py-4 uppercase tracking-[0.15em] hover:bg-cta-hover transition-colors mt-2 cursor-pointer" type="submit">Submit Inquiry</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-primary text-white border-t-4 border-cta">
+    <div class="w-full px-4 md:px-12 py-12 max-w-container mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="md:col-span-1">
+        <span class="text-xl font-bold font-display block mb-4">FAM Airconditioning</span>
+        <p class="text-sm text-white/70 mb-2">Cool Air. Cool Life.</p>
+        <p class="text-sm text-white/60">Industrial-grade HVAC solutions for commercial and residential excellence.</p>
+      </div>
+      <div>
+        <h4 class="font-label text-xs font-semibold mb-4 uppercase tracking-[0.15em] text-white/80">Navigation</h4>
+        <ul class="grid gap-3 text-sm">
+          <li><a class="text-white/70 hover:text-cta transition-colors" href="#home">Home</a></li>
+          <li><a class="text-white/70 hover:text-cta transition-colors" href="#about">About</a></li>
+          <li><a class="text-white/70 hover:text-cta transition-colors" href="#services">Services</a></li>
+          <li><a class="text-white/70 hover:text-cta transition-colors" href="#projects">Projects</a></li>
+          <li><a class="text-white/70 hover:text-cta transition-colors" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-label text-xs font-semibold mb-4 uppercase tracking-[0.15em] text-white/80">Brands</h4>
+        <ul class="grid gap-3 text-sm">
+          <li class="text-white/70">Carrier</li>
+          <li class="text-white/70">Mitsubishi Electric</li>
+          <li class="text-white/70">Daikin</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-label text-xs font-semibold mb-4 uppercase tracking-[0.15em] text-white/80">Connect</h4>
+        <div class="flex gap-4 text-white/60">
+          <span class="material-symbols-outlined text-3xl hover:text-cta transition-colors cursor-pointer">public</span>
+          <span class="material-symbols-outlined text-3xl hover:text-cta transition-colors cursor-pointer">group</span>
+          <span class="material-symbols-outlined text-3xl hover:text-cta transition-colors cursor-pointer">mail</span>
+        </div>
+      </div>
+    </div>
+    <div class="w-full px-4 md:px-12 py-6 max-w-container mx-auto border-t border-white/10 text-center text-xs text-white/40">
+      &copy; 2026 FAM Airconditioning Supply. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
