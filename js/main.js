@@ -13,8 +13,22 @@ document.addEventListener('DOMContentLoaded', () => {
     a.addEventListener('click', () => mobile.classList.add('hidden'))
   );
 
-  // Smooth scroll with fixed navbar offset
+  // Smooth scroll with fixed navbar offset (RAF-based, bypasses prefers-reduced-motion)
   const nav = document.getElementById('nav');
+
+  function scrollToY(targetY, duration) {
+    const startY = window.scrollY;
+    const dist = targetY - startY;
+    const start = performance.now();
+    function step(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const ease = p < 0.5 ? 4 * p ** 3 : 1 - Math.pow(-2 * p + 2, 3) / 2;
+      window.scrollTo(0, startY + dist * ease);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
@@ -22,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!target) return;
       e.preventDefault();
       const top = target.getBoundingClientRect().top + window.scrollY - nav.offsetHeight;
-      window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
+      scrollToY(top, 700);
       history.pushState(null, '', href);
     });
   });
