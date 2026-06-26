@@ -13,6 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
     a.addEventListener('click', () => mobile.classList.add('hidden'))
   );
 
+  // Smooth scroll with fixed navbar offset
+  const nav = document.getElementById('nav');
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      const target = document.querySelector(href);
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - nav.offsetHeight;
+      window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
+      history.pushState(null, '', href);
+    });
+  });
+
   // Active nav link
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-link');
