@@ -136,6 +136,26 @@ python3 "c:\Users\iRockFTW\Desktop\Claude\Fam Service Management\.claude\skills\
 
 ---
 
+## Planned: Custom CMS (PHP + MySQL on Hostinger Business)
+
+**Status: planned, not yet built.** The site is currently pure static (as described above) and stays that way until this migration is executed. This section documents the agreed plan so future work picks up from here instead of re-deriving it.
+
+**Why**: content (services, projects, brand logos, stats, contact info) is currently hardcoded in `index.html` and requires a code change + `git push` to edit. The owner wants to edit this content and upload pictures themselves via a simple admin panel, without touching code. Hosting is moving to **Hostinger Business** (PHP + MySQL) to make this possible — GitHub Pages cannot run a backend.
+
+**Approach**: `index.html` → `index.php`, MySQL as the single source of truth, rendered server-side. The Tailwind CDN, design tokens, fonts, icons, and "no build step" rule are all **unaffected** — PHP is a server-side templating layer, not a frontend bundler. Every existing Tailwind class and section pattern gets copied verbatim into PHP partials that loop over DB-fetched arrays instead of the current copy-pasted HTML blocks.
+
+**Scope**: everything repeatable becomes DB-driven and admin-editable — Stats, Services, Brands, Projects, About checklist, Contact info blocks, Nav links, plus a singleton Settings row (hero/about copy, footer blurb, contact recipient email). Single admin login, no multi-user roles, no versioning/drafts/scheduling.
+
+**New structure**: `admin/` (login + one CRUD screen per content type), `includes/` (`db.php`, `auth.php`, `functions.php`, `partials/`), `config/` (`config.php` — gitignored — + committed `config.sample.php`), `uploads/` (admin-uploaded images, locked down via `.htaccess` to deny PHP execution).
+
+**Security is mandatory, not optional** (public-facing site, shared hosting): PDO prepared statements only (never string-concatenated SQL); `htmlspecialchars()` on every DB value echoed into HTML; CSRF tokens on all admin forms and the public contact form; `password_hash()`/`password_verify()` + session regeneration + login rate-limiting for auth; uploads validated by real file bytes (`finfo_file()`), re-encoded through GD, given random filenames, and SVG uploads disallowed entirely (brand logos go PNG/WebP); `uploads/.htaccess` blocks PHP execution in that folder (the standard shared-hosting shell-upload defense); `display_errors=0` in production; DB credentials never committed.
+
+**Migration is incremental**: seed the DB from current hardcoded content first (day one looks pixel-identical), build admin CRUD, then convert `index.html` → `index.php` one section at a time with visual-parity checks against the live site after each, before cutting over the deploy target from GitHub Pages to Hostinger.
+
+**Full plan with exact DB schema (table/column definitions), file structure, and step-by-step migration order**: `C:\Users\Leander\.claude\plans\plan-me-a-custom-lazy-sundae.md`
+
+---
+
 ## Key Conventions
 
 - **All pages/sections are in `index.html`** — this is a single-file site. Do not create separate HTML pages unless explicitly asked.
