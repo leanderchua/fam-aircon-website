@@ -138,7 +138,17 @@ python3 "c:\Users\iRockFTW\Desktop\Claude\Fam Service Management\.claude\skills\
 
 ## Planned: Custom CMS (PHP + MySQL on Hostinger Business)
 
-**Status: planned, not yet built.** The site is currently pure static (as described above) and stays that way until this migration is executed. This section documents the agreed plan so future work picks up from here instead of re-deriving it.
+**Status: blocked — waiting on a PHP+MySQL hosting environment (Hostinger Business or a local stack like XAMPP/Laragon).** Until that's in place, all site changes stay static-only (`index.html` / `css/styles.css` / `js/main.js`), per the existing workflow above. Do not start CMS implementation until explicitly told to — the user will say when to start.
+
+Progress:
+- [x] Architecture, DB schema, security checklist, migration plan designed (see plan file)
+- [ ] PHP+MySQL environment available (Hostinger Business or local XAMPP/Laragon)
+- [ ] DB schema created
+- [ ] Admin login + auth built
+- [ ] Content seeded from current index.html
+- [ ] Admin CRUD screens built
+- [ ] index.html sections converted to index.php one by one
+- [ ] Deploy target cut over from GitHub Pages to Hostinger
 
 **Why**: content (services, projects, brand logos, stats, contact info) is currently hardcoded in `index.html` and requires a code change + `git push` to edit. The owner wants to edit this content and upload pictures themselves via a simple admin panel, without touching code. Hosting is moving to **Hostinger Business** (PHP + MySQL) to make this possible — GitHub Pages cannot run a backend.
 
