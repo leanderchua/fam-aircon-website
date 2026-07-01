@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const start = performance.now();
     function step(now) {
       const p = Math.min((now - start) / duration, 1);
-      const ease = p < 0.5 ? 4 * p ** 3 : 1 - Math.pow(-2 * p + 2, 3) / 2;
+      const ease = 1 - Math.pow(1 - p, 3);
       window.scrollTo(0, startY + dist * ease);
       if (p < 1) requestAnimationFrame(step);
     }
