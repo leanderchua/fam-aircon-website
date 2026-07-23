@@ -8,7 +8,7 @@ fam_render_crud_page([
         'title' => ['label' => 'Title', 'type' => 'text', 'required' => true],
         'subtitle' => ['label' => 'Subtitle', 'type' => 'text', 'required' => true],
         'category' => ['label' => 'Category', 'type' => 'select', 'options' => ['Commercial', 'Residential'], 'required' => true],
-        'photo_path' => ['label' => 'Photo Path (upload UI comes in a later phase)', 'type' => 'text', 'required' => true],
+        'photo_path' => ['label' => 'Photo', 'type' => 'image', 'required' => true],
         'photo_alt' => ['label' => 'Photo Alt Text', 'type' => 'text', 'required' => true],
     ],
 ]);

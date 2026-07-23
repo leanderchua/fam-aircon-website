@@ -6,6 +6,6 @@ fam_render_crud_page([
     'title' => 'Brands',
     'fields' => [
         'name' => ['label' => 'Brand Name', 'type' => 'text', 'required' => true],
-        'logo_path' => ['label' => 'Logo Path (upload UI comes in a later phase)', 'type' => 'text', 'required' => true],
+        'logo_path' => ['label' => 'Logo', 'type' => 'image', 'required' => true],
     ],
 ]);
