@@ -138,13 +138,15 @@ python3 "c:\Users\iRockFTW\Desktop\Claude\Fam Service Management\.claude\skills\
 
 ## Planned: Custom CMS (PHP + MySQL on Hostinger Business)
 
-**Status: blocked — waiting on a PHP+MySQL hosting environment (Hostinger Business or a local stack like XAMPP/Laragon).** Until that's in place, all site changes stay static-only (`index.html` / `css/styles.css` / `js/main.js`), per the existing workflow above. Do not start CMS implementation until explicitly told to — the user will say when to start.
+**Status: in progress — building and testing locally via XAMPP before deploying to Hostinger.** The static site (`index.html` / `css/styles.css` / `js/main.js`) stays the live production site on GitHub Pages until the CMS passes local testing and is cut over.
+
+Local dev environment: XAMPP installed at `C:\xampp` (MySQL running via `mysql_start.bat`). PHP app server run locally with `php -S localhost:8000` from the repo root (no Apache vhost yet — `.htaccess` upload-lockdown rules aren't exercised by the built-in server, so those get verified later under real Apache/Hostinger). DB: `fam_cms` on `127.0.0.1`, schema in `db/schema.sql`. Local admin login: `admin` / `fam12345` (test-only, must be changed before Hostinger deploy) at `http://localhost:8000/admin/login.php`.
 
 Progress:
 - [x] Architecture, DB schema, security checklist, migration plan designed (see plan file)
-- [ ] PHP+MySQL environment available (Hostinger Business or local XAMPP/Laragon)
-- [ ] DB schema created
-- [ ] Admin login + auth built
+- [x] PHP+MySQL environment available (local XAMPP)
+- [x] DB schema created (`db/schema.sql`, local `fam_cms` database)
+- [x] Admin login + auth built (`includes/auth.php`, `admin/login.php` — session, CSRF, lockout all verified locally)
 - [ ] Content seeded from current index.html
 - [ ] Admin CRUD screens built
 - [ ] index.html sections converted to index.php one by one
