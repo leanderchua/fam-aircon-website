@@ -72,11 +72,14 @@ function fam_attempt_login(string $username, string $password): array
     $user = $stmt->fetch();
 
     if (!$user) {
+        // Run password_verify against a dummy hash so this path takes
+        // roughly as long as a real failed attempt (timing side-channel).
+        password_verify($password, '$2y$10$Q9y2c1z3mN0k5vQ8dJqM4uS7wY2xE6bR1tH9pL0oC3aF5gV8sD1iK');
         return ['ok' => false, 'error' => 'Invalid username or password.'];
     }
 
     if ($user['locked_until'] && strtotime($user['locked_until']) > time()) {
-        return ['ok' => false, 'error' => 'Account locked. Try again later.'];
+        return ['ok' => false, 'error' => 'Invalid username or password.'];
     }
 
     if (!password_verify($password, $user['password_hash'])) {

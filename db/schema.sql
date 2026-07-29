@@ -27,39 +27,46 @@ CREATE TABLE site_settings (
 CREATE TABLE stats (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   value_display VARCHAR(20) NOT NULL, count_target INT UNSIGNED NULL, suffix VARCHAR(10) NULL,
-  label VARCHAR(80) NOT NULL, sort_order INT NOT NULL DEFAULT 0
+  label VARCHAR(80) NOT NULL, sort_order INT NOT NULL DEFAULT 0,
+  INDEX (sort_order)
 ) ENGINE=InnoDB;
 
 CREATE TABLE about_checklist (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  icon_name VARCHAR(60) NOT NULL DEFAULT 'check_circle', label VARCHAR(120) NOT NULL, sort_order INT NOT NULL DEFAULT 0
+  icon_name VARCHAR(60) NOT NULL DEFAULT 'check_circle', label VARCHAR(120) NOT NULL, sort_order INT NOT NULL DEFAULT 0,
+  INDEX (sort_order)
 ) ENGINE=InnoDB;
 
 CREATE TABLE services (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  icon_name VARCHAR(60) NOT NULL, title VARCHAR(120) NOT NULL, description TEXT NOT NULL, sort_order INT NOT NULL DEFAULT 0
+  icon_name VARCHAR(60) NOT NULL, title VARCHAR(120) NOT NULL, description TEXT NOT NULL, sort_order INT NOT NULL DEFAULT 0,
+  INDEX (sort_order)
 ) ENGINE=InnoDB;
 
 CREATE TABLE brands (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(80) NOT NULL, logo_path VARCHAR(255) NOT NULL, sort_order INT NOT NULL DEFAULT 0
+  name VARCHAR(80) NOT NULL, logo_path VARCHAR(255) NOT NULL, sort_order INT NOT NULL DEFAULT 0,
+  INDEX (sort_order)
 ) ENGINE=InnoDB;
 
 CREATE TABLE projects (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(150) NOT NULL, subtitle VARCHAR(200) NOT NULL,
   category ENUM('Commercial','Residential') NOT NULL DEFAULT 'Commercial',
-  photo_path VARCHAR(255) NOT NULL, photo_alt VARCHAR(200) NOT NULL, sort_order INT NOT NULL DEFAULT 0
+  photo_path VARCHAR(255) NOT NULL, photo_alt VARCHAR(200) NOT NULL, sort_order INT NOT NULL DEFAULT 0,
+  INDEX (sort_order)
 ) ENGINE=InnoDB;
 
 CREATE TABLE contact_info_blocks (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  icon_name VARCHAR(60) NOT NULL, label VARCHAR(80) NOT NULL, value_text TEXT NOT NULL, sort_order INT NOT NULL DEFAULT 0
+  icon_name VARCHAR(60) NOT NULL, label VARCHAR(80) NOT NULL, value_text TEXT NOT NULL, sort_order INT NOT NULL DEFAULT 0,
+  INDEX (sort_order)
 ) ENGINE=InnoDB;
 
 CREATE TABLE nav_links (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  label VARCHAR(60) NOT NULL, href VARCHAR(120) NOT NULL, sort_order INT NOT NULL DEFAULT 0
+  label VARCHAR(60) NOT NULL, href VARCHAR(120) NOT NULL, sort_order INT NOT NULL DEFAULT 0,
+  INDEX (sort_order)
 ) ENGINE=InnoDB;
 
 CREATE TABLE admin_users (

@@ -50,9 +50,10 @@ Loaded via CDN (`https://cdn.tailwindcss.com?plugins=forms,container-queries`). 
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `primary` | `#00164e` | Main brand navy — headings, logo text, key UI elements |
-| `secondary` | `#0051d5` | Interactive blue — active nav links, accents, highlights |
-| `secondary-light` | `#b4c5ff` | Light blue — stat suffixes on dark backgrounds |
+| `primary` | `#1E5F75` | Main brand teal — headings, logo text, key UI elements |
+| `primary-dark` | `#0f3344` | Dark navy-teal — nav logo wordmark, stats band, footer background |
+| `secondary` | `#29B5E8` | Interactive cyan — active nav links, accents, highlights |
+| `secondary-light` | `#b8e8f7` | Light cyan — stat suffixes on dark backgrounds |
 | `cta` | `#f97316` | Orange — CTA buttons ("Get a Quote", "Schedule Consultation") |
 | `cta-hover` | `#ea580c` | Orange hover state |
 | `surface` | `#f7f9fb` | Page background |
