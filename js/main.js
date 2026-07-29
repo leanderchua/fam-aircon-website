@@ -4,14 +4,47 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mobile menu
   const toggle = document.getElementById('navToggle');
   const mobile = document.getElementById('mobileMenu');
-  toggle.addEventListener('click', () => {
-    mobile.classList.toggle('hidden');
+  const toggleIcon = toggle.querySelector('.material-symbols-outlined');
+  let mobileCloseTimer = null;
+  function setMobileMenuOpen(open) {
+    clearTimeout(mobileCloseTimer);
+    toggle.setAttribute('aria-expanded', String(open));
+    if (toggleIcon) toggleIcon.textContent = open ? 'close' : 'menu';
+    if (open) {
+      mobile.classList.remove('hidden');
+      if (reduced) {
+        mobile.classList.add('menu-open');
+      } else {
+        requestAnimationFrame(() => mobile.classList.add('menu-open'));
+      }
+    } else {
+      mobile.classList.remove('menu-open');
+      if (reduced) {
+        mobile.classList.add('hidden');
+      } else {
+        mobileCloseTimer = setTimeout(() => mobile.classList.add('hidden'), 300);
+      }
+    }
+  }
+  toggle.addEventListener('click', e => {
+    e.stopPropagation();
+    setMobileMenuOpen(mobile.classList.contains('hidden'));
   });
 
   // Close mobile menu on link click
   mobile.querySelectorAll('a').forEach(a =>
-    a.addEventListener('click', () => mobile.classList.add('hidden'))
+    a.addEventListener('click', () => setMobileMenuOpen(false))
   );
+
+  // Close mobile menu on outside click / Escape
+  document.addEventListener('click', e => {
+    if (mobile.classList.contains('hidden')) return;
+    if (mobile.contains(e.target) || toggle.contains(e.target)) return;
+    setMobileMenuOpen(false);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !mobile.classList.contains('hidden')) setMobileMenuOpen(false);
+  });
 
   // Smooth scroll with fixed navbar offset (RAF-based, bypasses prefers-reduced-motion)
   const nav = document.getElementById('nav');
@@ -41,24 +74,70 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Active nav link
+  // Active nav link + sliding indicator
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-link');
-  window.addEventListener('scroll', () => {
+  const navIndicator = document.getElementById('navIndicator');
+  const navMenu = document.getElementById('navMenu');
+  let navScrollTicking = false;
+
+  function positionNavIndicator(link) {
+    if (!navIndicator || !navMenu || !link || navMenu.offsetParent === null) return;
+    const menuRect = navMenu.getBoundingClientRect();
+    const linkRect = link.getBoundingClientRect();
+    navIndicator.style.left = `${linkRect.left - menuRect.left}px`;
+    navIndicator.style.width = `${linkRect.width}px`;
+    navIndicator.style.opacity = '1';
+  }
+
+  function updateActiveNavLink() {
     const y = scrollY + 200;
     sections.forEach(s => {
       if (y >= s.offsetTop && y < s.offsetTop + s.offsetHeight) {
         navLinks.forEach(l => {
           const isActive = l.getAttribute('href') === '#' + s.id;
           l.classList.toggle('text-secondary', isActive);
-          l.classList.toggle('border-b-2', isActive);
-          l.classList.toggle('border-secondary', isActive);
-          l.classList.toggle('pb-1', isActive);
           l.classList.toggle('text-on-surface-variant', !isActive);
+          if (isActive) {
+            l.setAttribute('aria-current', 'page');
+            positionNavIndicator(l);
+          } else {
+            l.removeAttribute('aria-current');
+          }
         });
       }
     });
+    navScrollTicking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (navScrollTicking) return;
+    navScrollTicking = true;
+    requestAnimationFrame(updateActiveNavLink);
   }, { passive: true });
+  window.addEventListener('resize', () => {
+    positionNavIndicator(document.querySelector('.nav-link[aria-current="page"]'));
+  });
+  updateActiveNavLink();
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  if (reduced) {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+  } else {
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => revealObs.observe(el));
+  }
+
+  // Hero reveals immediately — already in the initial viewport
+  const heroReveal = document.querySelector('#home .reveal');
+  if (heroReveal) heroReveal.classList.add('is-visible');
 
   // Stats counter
   const vals = document.querySelectorAll('.stat-val');
@@ -167,21 +246,33 @@ document.addEventListener('DOMContentLoaded', () => {
     galleryCounter.textContent = `${activeIndex + 1} / ${project.images.length}`;
   }
 
+  let galleryCloseTimer = null;
   function openGallery(slug) {
     if (!projectGalleries[slug]) return;
+    clearTimeout(galleryCloseTimer);
     activeSlug = slug;
     activeIndex = 0;
     renderGallery();
     galleryModal.classList.remove('hidden');
     document.body.classList.add('overflow-hidden');
+    if (reduced) {
+      galleryModal.classList.add('modal-open');
+    } else {
+      requestAnimationFrame(() => galleryModal.classList.add('modal-open'));
+    }
     galleryClose.focus();
   }
 
   function closeGallery() {
-    galleryModal.classList.add('hidden');
+    galleryModal.classList.remove('modal-open');
     document.body.classList.remove('overflow-hidden');
     activeSlug = null;
     if (lastTrigger) lastTrigger.focus();
+    if (reduced) {
+      galleryModal.classList.add('hidden');
+    } else {
+      galleryCloseTimer = setTimeout(() => galleryModal.classList.add('hidden'), 200);
+    }
   }
 
   function showNext() {
@@ -235,18 +326,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Form
   const form = document.getElementById('contactForm');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    const txt = btn.textContent;
-    btn.textContent = 'SENT!';
-    btn.classList.replace('bg-cta', 'bg-green-600');
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.textContent = txt;
-      btn.classList.replace('bg-green-600', 'bg-cta');
-      btn.disabled = false;
-      form.reset();
-    }, 3000);
-  });
+  const isServerBacked = form.querySelector('input[name="contact_submit"]') !== null;
+  if (!isServerBacked) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const btn = form.querySelector('button[type="submit"]');
+      const txt = btn.textContent;
+      btn.textContent = 'SENT!';
+      btn.classList.replace('bg-cta', 'bg-green-600');
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = txt;
+        btn.classList.replace('bg-green-600', 'bg-cta');
+        btn.disabled = false;
+        form.reset();
+      }, 3000);
+    });
+  }
 });

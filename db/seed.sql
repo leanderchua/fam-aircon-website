@@ -37,7 +37,7 @@ INSERT INTO site_settings (
 INSERT INTO stats (value_display, count_target, suffix, label, sort_order) VALUES
 ('50+', 50, '+', 'Projects Completed', 0),
 ('5+', 5, '+', 'Years Experience', 1),
-('50+', NULL, '+', 'Commercial Clients', 2),
+('50+', 50, '+', 'Commercial Clients', 2),
 ('500+', 500, '+', 'Units Serviced', 3);
 
 INSERT INTO about_checklist (icon_name, label, sort_order) VALUES

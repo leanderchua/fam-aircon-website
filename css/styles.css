@@ -1,1 +1,73 @@
 /* Minimal custom styles — Tailwind handles the rest */
+
+/* Cursor affordances: the text-insertion cursor is reserved for the contact form's
+   fields, and the pointer cursor is reserved for real interactive controls (links,
+   buttons, form fields) and the project tiles that open the gallery modal. Plain
+   text and image boxes elsewhere stay a plain arrow. */
+* {
+  cursor: default;
+}
+a,
+button,
+select,
+[role="button"] {
+  cursor: pointer;
+}
+input:not([type="submit"]):not([type="button"]),
+textarea {
+  cursor: text;
+}
+
+/* Scroll-reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .6s ease-out, transform .6s ease-out;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Mobile menu open/close */
+#mobileMenu {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height .3s ease-out, opacity .2s ease-out;
+}
+#mobileMenu.menu-open {
+  max-height: 32rem;
+  opacity: 1;
+}
+
+/* Gallery lightbox open/close */
+#galleryModal {
+  opacity: 0;
+  transition: opacity .2s ease-out;
+}
+#galleryModal.modal-open {
+  opacity: 1;
+}
+#galleryModal .gallery-panel {
+  transform: scale(.96);
+  transition: transform .2s ease-out;
+}
+#galleryModal.modal-open .gallery-panel {
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  #mobileMenu {
+    transition: none;
+  }
+  #galleryModal,
+  #galleryModal .gallery-panel {
+    transition: none;
+  }
+}

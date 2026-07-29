@@ -28,7 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
 
             $recipient = fetchSettings()['contact_recipient_email'] ?? null;
             if ($recipient) {
-                $subject = 'New Service Inquiry - ' . $fullName;
+                $subjectSafe = str_replace(["\r", "\n"], '', $fullName);
+                $subject = 'New Service Inquiry - ' . $subjectSafe;
                 $body = "Name: {$fullName}\nPhone: {$phone}\nEmail: {$email}\nService Needed: {$serviceNeeded}\n\n{$projectDetails}";
                 @mail($recipient, $subject, $body, "From: no-reply@famaircon.com\r\n");
             }
@@ -66,80 +67,23 @@ $defaultProjectSpan = 'aspect-square md:aspect-auto';
 $pageTitle = $settings['company_name'] . ' - ' . $settings['hero_heading_line1'] . ' ' . $settings['hero_heading_line2'];
 $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
 ?>
-<!DOCTYPE html>
-<html class="scroll-smooth" lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <meta name="description" content="FAM Airconditioning Supply — Design, supply, installation, repair, and maintenance of all aircon brands. Home service across Metro Manila and nearby provinces.">
-  <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#1E5F75',
-            secondary: '#29B5E8',
-            'secondary-light': '#b8e8f7',
-            cta: '#f97316',
-            'cta-hover': '#ea580c',
-            surface: '#f7f9fb',
-            'surface-dim': '#e6e8ea',
-            'surface-bright': '#ffffff',
-            'on-surface': '#191c1e',
-            'on-surface-variant': '#45464d',
-            'outline-variant': '#c6c6cd',
-            outline: '#76777d',
-          },
-          fontFamily: {
-            display: ['Inter', 'system-ui', 'sans-serif'],
-            body: ['Inter', 'system-ui', 'sans-serif'],
-            label: ['JetBrains Mono', 'monospace'],
-          },
-          maxWidth: {
-            container: '1280px',
-          },
-          borderRadius: {
-            DEFAULT: '0.125rem',
-          },
-          transitionDuration: {
-            '1500': '1500ms',
-          },
-        },
-      },
-    };
-  </script>
-  <style>
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-    .material-symbols-outlined.fill-icon {
-      font-variation-settings: 'FILL' 1;
-    }
-  </style>
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body class="bg-surface text-on-surface font-body text-base antialiased selection:bg-secondary selection:text-white">
+<?php include __DIR__ . '/includes/head.php'; ?>
 
   <!-- NAV -->
   <header class="bg-white border-b border-outline-variant fixed w-full top-0 z-50" id="nav">
     <div class="flex justify-between items-center w-full px-4 md:px-12 max-w-container mx-auto h-20">
       <div class="flex items-center gap-4">
-        <img alt="<?= htmlspecialchars($settings['company_name'], ENT_QUOTES, 'UTF-8') ?> Logo" class="h-12 w-auto object-contain" src="<?= htmlspecialchars($settings['logo_path'], ENT_QUOTES, 'UTF-8') ?>">
-        <span class="text-lg font-extrabold text-[#0f3344] hidden lg:block tracking-tight font-display"><?= htmlspecialchars($settings['company_name'], ENT_QUOTES, 'UTF-8') ?></span>
+        <img alt="<?= htmlspecialchars($settings['company_name'], ENT_QUOTES, 'UTF-8') ?> Logo" class="h-10 w-auto object-contain" src="<?= htmlspecialchars($settings['logo_path'], ENT_QUOTES, 'UTF-8') ?>">
+        <span class="text-lg font-extrabold text-primary-dark hidden lg:block tracking-tight font-display"><?= htmlspecialchars($settings['company_name'], ENT_QUOTES, 'UTF-8') ?></span>
       </div>
-      <nav class="hidden lg:flex items-center gap-8 text-base font-body" id="navMenu">
-        <?php foreach ($navLinks as $i => $link): ?>
-          <a class="nav-link <?= $i === 0 ? 'text-secondary border-b-2 border-secondary pb-1 transition-colors duration-200' : 'text-on-surface-variant hover:text-secondary transition-colors duration-200' ?>" href="<?= htmlspecialchars($link['href'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($link['label'], ENT_QUOTES, 'UTF-8') ?></a>
+      <nav class="hidden lg:flex items-center gap-8 text-base font-body relative" id="navMenu">
+        <?php foreach ($navLinks as $link): ?>
+          <a class="nav-link text-on-surface-variant hover:text-secondary pb-1 transition-colors duration-200" href="<?= htmlspecialchars($link['href'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($link['label'], ENT_QUOTES, 'UTF-8') ?></a>
         <?php endforeach; ?>
+        <span class="absolute left-0 -bottom-1 h-0.5 bg-secondary rounded-full opacity-0 transition-[left,width,opacity] duration-300 ease-out pointer-events-none" id="navIndicator"></span>
       </nav>
       <a class="hidden lg:inline-flex items-center justify-center px-6 py-3 bg-cta text-white font-label text-xs font-semibold uppercase tracking-widest hover:bg-cta-hover transition-colors" href="#contact">Get a Quote</a>
-      <button class="lg:hidden text-primary p-2" id="navToggle" aria-label="Toggle menu">
+      <button class="lg:hidden text-primary p-2" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
         <span class="material-symbols-outlined text-3xl">menu</span>
       </button>
     </div>
@@ -161,13 +105,13 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
         <div class="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent"></div>
       </div>
       <div class="relative w-full px-4 md:px-12 max-w-container mx-auto py-24">
-        <div class="max-w-2xl grid gap-6">
+        <div class="reveal max-w-2xl grid gap-6">
           <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase flex items-center gap-2">
             <span class="w-8 h-px bg-secondary"></span>
             <?= htmlspecialchars($settings['hero_eyebrow'], ENT_QUOTES, 'UTF-8') ?>
           </span>
           <h1 class="font-display text-5xl md:text-[56px] leading-tight font-extrabold tracking-tight">
-            <span class="text-[#0e3040]"><?= htmlspecialchars($settings['hero_heading_line1'], ENT_QUOTES, 'UTF-8') ?></span> <br><span class="text-[#29B5E8]"><?= htmlspecialchars($settings['hero_heading_line2'], ENT_QUOTES, 'UTF-8') ?></span>
+            <span class="text-primary-dark"><?= htmlspecialchars($settings['hero_heading_line1'], ENT_QUOTES, 'UTF-8') ?></span> <br><span class="text-secondary"><?= htmlspecialchars($settings['hero_heading_line2'], ENT_QUOTES, 'UTF-8') ?></span>
           </h1>
           <p class="text-xl font-medium text-on-surface-variant max-w-xl leading-relaxed">
             <?= htmlspecialchars($settings['hero_subtitle'], ENT_QUOTES, 'UTF-8') ?>
@@ -181,7 +125,7 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
     </section>
 
     <!-- STATS -->
-    <section class="bg-[#0f3344] text-white py-12 border-b border-outline-variant">
+    <section class="bg-primary-dark text-white py-12 border-b border-outline-variant">
       <div class="px-4 md:px-12 max-w-container mx-auto">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x md:divide-white/20">
           <?php foreach ($stats as $stat): ?>
@@ -201,10 +145,20 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
     <!-- ABOUT -->
     <section class="py-24 bg-surface border-b border-outline-variant" id="about">
       <div class="px-4 md:px-12 max-w-container mx-auto grid md:grid-cols-2 gap-6 items-center">
-        <div class="relative h-[500px] border border-outline-variant p-2 bg-white">
-          <div class="bg-cover bg-center w-full h-full grayscale hover:grayscale-0 transition-all duration-1000" style="background-image: url('<?= htmlspecialchars($settings['about_image_path'], ENT_QUOTES, 'UTF-8') ?>')"></div>
+        <div class="reveal relative h-[500px] border border-outline-variant p-2 bg-white">
+          <div class="grid grid-cols-2 grid-rows-2 gap-2 w-full h-full">
+            <div class="row-span-2 relative overflow-hidden group">
+              <div class="w-full h-full bg-cover bg-center grayscale group-hover:grayscale-0 transition-all duration-1000" style="background-image: url('<?= htmlspecialchars($settings['about_image_path'], ENT_QUOTES, 'UTF-8') ?>')"></div>
+            </div>
+            <div class="relative overflow-hidden group">
+              <div class="w-full h-full bg-cover bg-center grayscale group-hover:grayscale-0 transition-all duration-1000" style="background-image: url('https://images.unsplash.com/photo-1642749776312-aa42ce20c9f5?w=600&h=600&fit=crop&q=80')"></div>
+            </div>
+            <div class="relative overflow-hidden group">
+              <div class="w-full h-full bg-cover bg-center grayscale group-hover:grayscale-0 transition-all duration-1000" style="background-image: url('https://images.unsplash.com/photo-1634114582073-c34f96202b65?w=600&h=600&fit=crop&q=80')"></div>
+            </div>
+          </div>
         </div>
-        <div class="grid gap-6 md:pl-12">
+        <div class="reveal grid gap-6 md:pl-12" style="transition-delay:120ms">
           <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase"><?= htmlspecialchars($settings['about_eyebrow'], ENT_QUOTES, 'UTF-8') ?></span>
           <h2 class="text-3xl font-bold font-display text-primary leading-tight"><?= htmlspecialchars($settings['about_heading'], ENT_QUOTES, 'UTF-8') ?></h2>
           <p class="text-lg text-on-surface-variant leading-relaxed">
@@ -225,14 +179,14 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
     <!-- SERVICES -->
     <section class="py-24 bg-white border-b border-outline-variant" id="services">
       <div class="px-4 md:px-12 max-w-container mx-auto">
-        <div class="text-center mb-16 max-w-3xl mx-auto">
+        <div class="reveal text-center mb-16 max-w-3xl mx-auto">
           <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase block mb-4"><?= htmlspecialchars($settings['services_eyebrow'], ENT_QUOTES, 'UTF-8') ?></span>
           <h2 class="text-3xl font-bold font-display text-primary mb-6"><?= htmlspecialchars($settings['services_heading'], ENT_QUOTES, 'UTF-8') ?></h2>
           <p class="text-lg text-on-surface-variant"><?= htmlspecialchars($settings['services_intro'], ENT_QUOTES, 'UTF-8') ?></p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <?php foreach ($services as $service): ?>
-            <div class="group border border-outline-variant bg-surface p-8 hover:border-secondary transition-colors duration-300 cursor-pointer">
+          <?php foreach ($services as $i => $service): ?>
+            <div class="reveal group border border-outline-variant bg-surface p-8 hover:border-secondary transition-colors duration-300" style="transition-delay:<?= ($i % 3) * 80 ?>ms">
               <div class="w-14 h-14 bg-surface-dim flex items-center justify-center mb-6 group-hover:bg-secondary group-hover:text-white transition-colors duration-300">
                 <span class="material-symbols-outlined text-3xl"><?= htmlspecialchars($service['icon_name'], ENT_QUOTES, 'UTF-8') ?></span>
               </div>
@@ -248,14 +202,14 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
     <section class="py-24 bg-surface border-b border-outline-variant" id="projects">
       <div class="px-4 md:px-12 max-w-container mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-          <div class="max-w-2xl">
+          <div class="reveal max-w-2xl">
             <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase block mb-4"><?= htmlspecialchars($settings['projects_eyebrow'], ENT_QUOTES, 'UTF-8') ?></span>
             <h2 class="text-3xl font-bold font-display text-primary"><?= htmlspecialchars($settings['projects_heading'], ENT_QUOTES, 'UTF-8') ?></h2>
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:auto-rows-[220px]">
           <?php foreach ($projects as $i => $project): $slug = fam_slug($project['title']); ?>
-            <div class="group relative overflow-hidden bg-surface-dim <?= $projectSpanClasses[$i] ?? $defaultProjectSpan ?> cursor-pointer" data-project="<?= htmlspecialchars($slug, ENT_QUOTES, 'UTF-8') ?>" role="button" tabindex="0" aria-label="View gallery for <?= htmlspecialchars($project['title'], ENT_QUOTES, 'UTF-8') ?>">
+            <div class="reveal group relative overflow-hidden bg-surface-dim <?= $projectSpanClasses[$i] ?? $defaultProjectSpan ?> cursor-pointer" style="transition-delay:<?= ($i % 3) * 80 ?>ms" data-project="<?= htmlspecialchars($slug, ENT_QUOTES, 'UTF-8') ?>" role="button" tabindex="0" aria-label="View gallery for <?= htmlspecialchars($project['title'], ENT_QUOTES, 'UTF-8') ?>">
               <img src="<?= htmlspecialchars($project['photo_path'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($project['photo_alt'], ENT_QUOTES, 'UTF-8') ?>" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" loading="lazy">
               <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/10 to-transparent group-hover:from-primary/95 transition-colors duration-300"></div>
               <span class="absolute top-4 left-4 px-3 py-1 bg-white/85 backdrop-blur-sm font-label text-xs font-semibold text-primary uppercase tracking-wider"><?= htmlspecialchars($project['category'], ENT_QUOTES, 'UTF-8') ?></span>
@@ -273,13 +227,13 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
     <!-- BRANDS -->
     <section class="py-20 bg-white border-b border-outline-variant" id="brands">
       <div class="px-4 md:px-12 max-w-container mx-auto">
-        <div class="text-center mb-12">
+        <div class="reveal text-center mb-12">
           <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase block mb-4"><?= htmlspecialchars($settings['brands_eyebrow'], ENT_QUOTES, 'UTF-8') ?></span>
           <h2 class="text-3xl font-bold font-display text-primary"><?= htmlspecialchars($settings['brands_heading'], ENT_QUOTES, 'UTF-8') ?></h2>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          <?php foreach ($brands as $brand): $isPng = strtolower(pathinfo($brand['logo_path'], PATHINFO_EXTENSION)) === 'png'; ?>
-            <div class="flex items-center justify-center p-8 border border-outline-variant bg-surface hover:border-secondary hover:shadow-md transition-all duration-300 cursor-pointer group">
+          <?php foreach ($brands as $i => $brand): $isPng = strtolower(pathinfo($brand['logo_path'], PATHINFO_EXTENSION)) === 'png'; ?>
+            <div class="reveal flex items-center justify-center p-8 border border-outline-variant bg-surface hover:border-secondary hover:shadow-md transition-all duration-300 group" style="transition-delay:<?= ($i % 4) * 60 ?>ms">
               <img src="<?= htmlspecialchars($brand['logo_path'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($brand['name'], ENT_QUOTES, 'UTF-8') ?>" class="<?= $isPng ? 'h-16 max-w-[180px]' : 'h-10 max-w-[140px]' ?> w-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-1000" loading="lazy">
             </div>
           <?php endforeach; ?>
@@ -290,7 +244,7 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
     <!-- CONTACT -->
     <section class="py-24 bg-white" id="contact">
       <div class="px-4 md:px-12 max-w-container mx-auto grid md:grid-cols-2 gap-12">
-        <div>
+        <div class="reveal">
           <span class="font-label text-xs font-semibold text-secondary tracking-[0.15em] uppercase block mb-4"><?= htmlspecialchars($settings['contact_eyebrow'], ENT_QUOTES, 'UTF-8') ?></span>
           <h2 class="text-3xl font-bold font-display text-primary mb-6"><?= htmlspecialchars($settings['contact_heading'], ENT_QUOTES, 'UTF-8') ?></h2>
           <p class="text-on-surface-variant mb-12"><?= htmlspecialchars($settings['contact_intro'], ENT_QUOTES, 'UTF-8') ?></p>
@@ -306,7 +260,7 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
             <?php endforeach; ?>
           </div>
         </div>
-        <div class="bg-surface border border-outline-variant p-8 relative">
+        <div class="reveal bg-surface border border-outline-variant p-8 relative" style="transition-delay:120ms">
           <div class="absolute top-0 left-0 w-full h-1 bg-cta"></div>
 
           <?php if ($contactSuccess): ?>
@@ -327,21 +281,21 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
             <input type="hidden" name="contact_submit" value="1">
             <div class="grid md:grid-cols-2 gap-6">
               <div>
-                <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Full Name</label>
-                <input class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" placeholder="Juan Dela Cruz" name="full_name" type="text" autocomplete="name" required>
+                <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider" for="cf-full-name">Full Name</label>
+                <input class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" id="cf-full-name" placeholder="Juan Dela Cruz" name="full_name" type="text" autocomplete="name" required>
               </div>
               <div>
-                <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Phone</label>
-                <input class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" placeholder="(0917) 123 4567" name="phone" type="tel" autocomplete="tel">
+                <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider" for="cf-phone">Phone</label>
+                <input class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" id="cf-phone" placeholder="(0917) 123 4567" name="phone" type="tel" autocomplete="tel">
               </div>
             </div>
             <div>
-              <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Email Address</label>
-              <input class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" placeholder="juan@email.com" name="email" type="email" autocomplete="email" required>
+              <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider" for="cf-email">Email Address</label>
+              <input class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" id="cf-email" placeholder="juan@email.com" name="email" type="email" autocomplete="email" required>
             </div>
             <div>
-              <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Service Needed</label>
-              <select class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" name="service_needed" required>
+              <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider" for="cf-service">Service Needed</label>
+              <select class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" id="cf-service" name="service_needed" required>
                 <option value="" disabled selected>Select a service</option>
                 <?php foreach ($services as $service): ?>
                   <option value="<?= htmlspecialchars($service['title'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($service['title'], ENT_QUOTES, 'UTF-8') ?></option>
@@ -349,8 +303,8 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
               </select>
             </div>
             <div>
-              <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider">Project Details</label>
-              <textarea class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" placeholder="Building size, current system, timeline..." name="project_details" rows="4"></textarea>
+              <label class="block font-label text-xs font-semibold text-primary mb-2 uppercase tracking-wider" for="cf-details">Project Details</label>
+              <textarea class="w-full bg-white border border-outline-variant px-4 py-3 focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors text-base" id="cf-details" placeholder="Building size, current system, timeline..." name="project_details" rows="4"></textarea>
             </div>
             <button class="w-full bg-cta text-white font-label text-xs font-semibold py-4 uppercase tracking-[0.15em] hover:bg-cta-hover transition-colors mt-2 cursor-pointer" type="submit">Submit Inquiry</button>
           </form>
@@ -361,7 +315,7 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
   </main>
 
   <!-- FOOTER -->
-  <footer class="bg-[#0f3344] text-white border-t-4 border-cta">
+  <footer class="bg-primary-dark text-white border-t-4 border-cta">
     <div class="w-full px-4 md:px-12 py-12 max-w-container mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
       <div class="md:col-span-1">
         <span class="text-xl font-bold font-display block mb-4"><?= htmlspecialchars($settings['company_name'], ENT_QUOTES, 'UTF-8') ?></span>
@@ -422,7 +376,7 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
     <button id="galleryNext" class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 text-white/80 hover:text-white z-10" aria-label="Next photo" type="button">
       <span class="material-symbols-outlined text-4xl">chevron_right</span>
     </button>
-    <div class="relative h-full flex flex-col items-center justify-center px-4 md:px-20 py-16 pointer-events-none">
+    <div class="gallery-panel relative h-full flex flex-col items-center justify-center px-4 md:px-20 py-16 pointer-events-none">
       <img id="galleryImage" src="" alt="" class="max-h-[70vh] max-w-full object-contain pointer-events-auto">
       <div class="mt-6 text-center">
         <span id="galleryBadge" class="inline-block mb-3 px-3 py-1 bg-white/10 font-label text-xs font-semibold text-white uppercase tracking-wider"></span>
