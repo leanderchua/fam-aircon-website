@@ -9,6 +9,7 @@ $famNavItems = [
     'projects.php' => ['label' => 'Projects', 'icon' => 'photo'],
     'contact_info.php' => ['label' => 'Contact Info', 'icon' => 'mail'],
     'nav_links.php' => ['label' => 'Nav Links', 'icon' => 'menu'],
+    'admins.php' => ['label' => 'Admins', 'icon' => 'user'],
 ];
 $famCurrent = basename($_SERVER['SCRIPT_NAME']);
 $famPageTitle = $famPageTitle ?? ($famNavItems[$famCurrent]['label'] ?? 'Admin');
@@ -31,6 +32,7 @@ function fam_icon(string $name, string $class = 'w-5 h-5'): string
         'edit' => '<path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5v6a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V8.25A2.25 2.25 0 016 6h6" />',
         'plus' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />',
         'image-off' => '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159M14.25 4.5l7.5 7.5M21.75 4.5l-7.5 7.5M2.25 6v12a1.5 1.5 0 001.5 1.5h16.5" />',
+        'user' => '<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />',
     ];
     $d = $paths[$name] ?? $paths['tag'];
     return "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" class=\"{$class}\" aria-hidden=\"true\">{$d}</svg>";
