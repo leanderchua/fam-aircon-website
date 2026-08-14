@@ -26,12 +26,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
             );
             $stmt->execute([$fullName, $phone, $email, $serviceNeeded, $projectDetails, $_SERVER['REMOTE_ADDR'] ?? null]);
 
-            $recipient = fetchSettings()['contact_recipient_email'] ?? null;
-            if ($recipient) {
+            $recipients = array_filter(array_map(
+                fn($addr) => filter_var(trim($addr), FILTER_VALIDATE_EMAIL) ?: null,
+                explode(',', fetchSettings()['contact_recipient_email'] ?? '')
+            ));
+            if ($recipients) {
                 $subjectSafe = str_replace(["\r", "\n"], '', $fullName);
                 $subject = 'New Service Inquiry - ' . $subjectSafe;
                 $body = "Name: {$fullName}\nPhone: {$phone}\nEmail: {$email}\nService Needed: {$serviceNeeded}\n\n{$projectDetails}";
-                @mail($recipient, $subject, $body, "From: no-reply@famaircon.com\r\n");
+                @mail(implode(', ', $recipients), $subject, $body, "From: no-reply@famaircon.com\r\n");
             }
 
             $contactSuccess = true;

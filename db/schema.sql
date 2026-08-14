@@ -18,7 +18,7 @@ CREATE TABLE site_settings (
   brands_eyebrow VARCHAR(120), brands_heading VARCHAR(150),
   projects_eyebrow VARCHAR(120), projects_heading VARCHAR(150),
   contact_eyebrow VARCHAR(120), contact_heading VARCHAR(150), contact_intro TEXT,
-  contact_recipient_email VARCHAR(190) NOT NULL,
+  contact_recipient_email VARCHAR(500) NOT NULL,
   footer_blurb TEXT, copyright_text VARCHAR(150),
   social_facebook_url VARCHAR(255), social_linkedin_url VARCHAR(255), social_email VARCHAR(190),
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

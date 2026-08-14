@@ -45,7 +45,7 @@ $sections = [
         'contact_eyebrow' => ['label' => 'Contact Eyebrow', 'type' => 'text'],
         'contact_heading' => ['label' => 'Contact Heading', 'type' => 'text'],
         'contact_intro' => ['label' => 'Contact Intro', 'type' => 'textarea'],
-        'contact_recipient_email' => ['label' => 'Contact Recipient Email', 'type' => 'email', 'required' => true],
+        'contact_recipient_email' => ['label' => 'Contact Recipient Email(s)', 'type' => 'text', 'required' => true, 'hint' => 'Comma-separate multiple addresses, e.g. sales@famaircon.com, owner@famaircon.com'],
     ],
     'Footer & Social' => [
         'footer_blurb' => ['label' => 'Footer Blurb', 'type' => 'textarea'],
@@ -74,6 +74,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($spec['required']) && $vals[$col] === '') {
                 $error = "{$spec['label']} is required.";
             }
+        }
+        if (!$error && $vals['contact_recipient_email'] !== '') {
+            $addrs = array_map('trim', explode(',', $vals['contact_recipient_email']));
+            foreach ($addrs as $addr) {
+                if (!filter_var($addr, FILTER_VALIDATE_EMAIL)) {
+                    $error = "\"{$addr}\" is not a valid email address in Contact Recipient Email(s).";
+                    break;
+                }
+            }
+            $vals['contact_recipient_email'] = implode(', ', $addrs);
         }
         if (!$error) {
             $setSql = implode(', ', array_map(fn($c) => "{$c} = ?", $cols));
@@ -130,6 +140,7 @@ require __DIR__ . '/includes/admin_header.php';
               <p class="text-xs text-on-surface-variant/70 mt-1">Paste an image path or URL — a real upload button is coming in a later update.</p>
             <?php else: ?>
               <input type="<?= htmlspecialchars($spec['type'], ENT_QUOTES, 'UTF-8') ?>" id="field_<?= $col ?>" name="<?= $col ?>" value="<?= htmlspecialchars((string) $val, ENT_QUOTES, 'UTF-8') ?>" <?= !empty($spec['required']) ? 'required aria-required="true"' : '' ?> class="w-full h-10 border border-outline-variant px-3 focus-visible:border-secondary">
+              <?php if (!empty($spec['hint'])): ?><p class="text-xs text-on-surface-variant/70 mt-1"><?= htmlspecialchars($spec['hint'], ENT_QUOTES, 'UTF-8') ?></p><?php endif; ?>
             <?php endif; ?>
           </div>
         <?php endforeach; ?>
