@@ -1,0 +1,11 @@
+# Uploaded files are served as static assets only — never executed as scripts.
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+
+<FilesMatch "\.(?i:php|phtml|php\d|pl|py|cgi|asp|aspx|sh|exe)$">
+    Require all denied
+</FilesMatch>
