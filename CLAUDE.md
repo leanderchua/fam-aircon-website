@@ -139,7 +139,34 @@ python3 "c:\Users\iRockFTW\Desktop\Claude\Fam Service Management\.claude\skills\
 
 ## Planned: Custom CMS (PHP + MySQL on Hostinger Business)
 
-**Status: in progress — building and testing locally via XAMPP before deploying to Hostinger.** `index.html` remains the live production file served by GitHub Pages (GitHub Pages cannot execute PHP) — it is untouched and still the deploy target until the actual Hostinger cutover. `index.php` is a new, fully DB-driven parallel file, built and verified locally only; it is not linked from anywhere public yet.
+**Status: live on Hostinger.** `index.php` is deployed and DB-driven at `https://famairconditioningsupply.com`. `index.html` still exists in the repo and is still what GitHub Pages serves at `https://leanderchua.github.io/fam-aircon-website/` — it's left untouched as a fallback, not actively maintained.
+
+### Local Testing → Deploy Workflow
+
+**Every change goes through this order — test locally first, deploy only after it passes:**
+
+1. **Make the change** in the repo files.
+2. **Test on localhost** before pushing anything:
+   ```powershell
+   C:\xampp\mysql_start.bat        # start local MySQL (fam_cms DB)
+   php -S localhost:8000            # from repo root
+   ```
+   Verify the change at `http://localhost:8000` (public site) or `http://localhost:8000/admin/...` (admin panel). Stop both processes when done.
+3. **Once local testing passes**, push both targets together:
+   - `git add` the changed files, commit, `git push` (GitHub, `master`)
+   - Rebuild the deploy archive (runtime files only — `index.php`, `admin/`, `includes/`, `css/`, `js/`, `images/`, `config/config.php` swapped for the production `config/config.prod.php`, `uploads/`, root `.htaccess`) and redeploy to Hostinger via the same zip-upload process used for the initial cutover.
+   - Verify the live site after redeploy.
+
+`config/config.php` in the working tree always holds **local dev** credentials (127.0.0.1 / `fam_cms` / root). `config/config.prod.php` (also gitignored, never committed) holds the real Hostinger DB credentials — it only gets swapped in when building the deploy archive, never copied over the local dev config.
+
+### Hostinger Account Layout
+
+Same Hostinger account (`u311097277`) hosts three separate things under `famairconditioningsupply.com` — be careful not to let a deploy touch the other two:
+- **Main domain** (`famairconditioningsupply.com`) — this site's `index.php` + CMS, document root also contains `inventory-config.php` and root `.htaccess` (which must keep the rule blocking direct access to that file — see the merged `.htaccess` built during deploy).
+- **`inventory.famairconditioningsupply.com`** — a separate Node/PHP inventory app, path-based subdomain sharing the main domain's document root under `/inventory`, own DB (`u311097277_Inventory`). Not related to this project — never overwrite.
+- **`services.famairconditioningsupply.com`** — separate addon domain, own document root. Not related to this project.
+
+Production DB: `u311097277_fam_cms` (phpMyAdmin access via Hostinger's `hosting_getPhpMyAdminLinkV1`, no local MySQL client available for direct import). Admin login: `admin` at `/admin/login.php` — password was rotated after initial deploy; use "Change Password" in `/admin/admins.php` if it needs resetting, not a plaintext lookup anywhere.
 
 Local dev environment: XAMPP installed at `C:\xampp` (MySQL running via `mysql_start.bat`). PHP app server run locally with `php -S localhost:8000` from the repo root (no Apache vhost yet — `.htaccess` upload-lockdown rules aren't exercised by the built-in server, so those get verified later under real Apache/Hostinger). DB: `fam_cms` on `127.0.0.1`, schema in `db/schema.sql`, seed data in `db/seed.sql` (transcribed verbatim from the original `index.html`). Local admin login: `admin` / `fam12345` (test-only, must be changed before Hostinger deploy) at `http://localhost:8000/admin/login.php`.
 
@@ -156,7 +183,9 @@ Progress:
 - [x] Admin CRUD screens built (all 7 repeatable content types + settings singleton, verified add/edit/reorder/delete/CSRF-rejection against the real local DB)
 - [x] Admin UI/UX reworked (icon sidebar + mobile drawer, live image previews, accessible forms/tables)
 - [x] index.html converted to index.php, DB-driven, verified locally (index.html untouched, still the live GitHub Pages file)
-- [ ] Deploy target cut over from GitHub Pages to Hostinger
+- [x] Deploy target cut over from GitHub Pages to Hostinger — live at `https://famairconditioningsupply.com`
+- [x] Admin account management screen (`/admin/admins.php` — add admin, change password, delete with last-admin/self-delete guards)
+- [ ] Real file upload for image fields (still plain text/URL inputs with preview)
 
 **Why**: content (services, projects, brand logos, stats, contact info) is currently hardcoded in `index.html` and requires a code change + `git push` to edit. The owner wants to edit this content and upload pictures themselves via a simple admin panel, without touching code. Hosting is moving to **Hostinger Business** (PHP + MySQL) to make this possible — GitHub Pages cannot run a backend.
 
