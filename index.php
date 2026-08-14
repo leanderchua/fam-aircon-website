@@ -48,16 +48,9 @@ $aboutChecklist = fetchAboutChecklist();
 $services = fetchServices();
 $brands = fetchBrands();
 $projects = fetchProjects();
+$projectPhotosByProject = fetchProjectPhotos();
 $contactBlocks = fetchContactBlocks();
 $navLinks = fetchNavLinks();
-
-function fam_slug(string $s): string
-{
-    $s = strtolower($s);
-    $s = preg_replace('/[^a-z0-9\s-]/', '', $s);
-    $s = preg_replace('/[\s-]+/', '-', $s);
-    return trim($s, '-');
-}
 
 // Bento-grid tile spans for the Projects gallery — positional, not DB-driven (matches the original hand-tuned layout).
 $projectSpanClasses = [
@@ -211,12 +204,29 @@ $brandChunks = array_chunk($brands, (int) ceil(count($brands) / 2));
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:auto-rows-[220px]">
-          <?php foreach ($projects as $i => $project): $slug = fam_slug($project['title']); ?>
-            <div class="reveal group relative overflow-hidden bg-surface-dim <?= $projectSpanClasses[$i] ?? $defaultProjectSpan ?> cursor-pointer" style="transition-delay:<?= ($i % 3) * 80 ?>ms" data-project="<?= htmlspecialchars($slug, ENT_QUOTES, 'UTF-8') ?>" role="button" tabindex="0" aria-label="View gallery for <?= htmlspecialchars($project['title'], ENT_QUOTES, 'UTF-8') ?>">
+          <?php foreach ($projects as $i => $project):
+            $galleryPhotos = $projectPhotosByProject[$project['id']] ?? [];
+            $hasGallery = count($galleryPhotos) > 0;
+            $extraAttrs = '';
+            if ($hasGallery) {
+                $images = [['src' => $project['photo_path'], 'alt' => $project['photo_alt']]];
+                foreach ($galleryPhotos as $gp) {
+                    $images[] = ['src' => $gp['photo_path'], 'alt' => $gp['photo_alt']];
+                }
+                $extraAttrs = ' role="button" tabindex="0" aria-label="View gallery for '
+                    . htmlspecialchars($project['title'], ENT_QUOTES, 'UTF-8') . '"'
+                    . ' data-gallery=\'' . htmlspecialchars(json_encode($images), ENT_QUOTES, 'UTF-8') . '\''
+                    . ' data-gallery-title="' . htmlspecialchars($project['title'], ENT_QUOTES, 'UTF-8') . '"'
+                    . ' data-gallery-category="' . htmlspecialchars($project['category'], ENT_QUOTES, 'UTF-8') . '"';
+            }
+          ?>
+            <div class="reveal group relative overflow-hidden bg-surface-dim <?= $projectSpanClasses[$i] ?? $defaultProjectSpan ?><?= $hasGallery ? ' cursor-pointer' : '' ?>" style="transition-delay:<?= ($i % 3) * 80 ?>ms"<?= $extraAttrs ?>>
               <img src="<?= htmlspecialchars($project['photo_path'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($project['photo_alt'], ENT_QUOTES, 'UTF-8') ?>" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" loading="lazy">
               <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/10 to-transparent group-hover:from-primary/95 transition-colors duration-300"></div>
               <span class="absolute top-4 left-4 px-3 py-1 bg-white/85 backdrop-blur-sm font-label text-xs font-semibold text-primary uppercase tracking-wider"><?= htmlspecialchars($project['category'], ENT_QUOTES, 'UTF-8') ?></span>
-              <span class="material-symbols-outlined absolute top-4 right-4 text-white/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300">photo_library</span>
+              <?php if ($hasGallery): ?>
+                <span class="material-symbols-outlined absolute top-4 right-4 text-white/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300">photo_library</span>
+              <?php endif; ?>
               <div class="absolute bottom-0 left-0 right-0 p-5">
                 <h3 class="text-xl font-semibold font-display text-white mb-1"><?= htmlspecialchars($project['title'], ENT_QUOTES, 'UTF-8') ?></h3>
                 <p class="text-sm text-white/80"><?= htmlspecialchars($project['subtitle'], ENT_QUOTES, 'UTF-8') ?></p>

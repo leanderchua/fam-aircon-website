@@ -57,6 +57,14 @@ CREATE TABLE projects (
   INDEX (sort_order)
 ) ENGINE=InnoDB;
 
+CREATE TABLE project_photos (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  project_id INT UNSIGNED NOT NULL,
+  photo_path VARCHAR(255) NOT NULL, photo_alt VARCHAR(200) NOT NULL, sort_order INT NOT NULL DEFAULT 0,
+  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+  INDEX (project_id, sort_order)
+) ENGINE=InnoDB;
+
 CREATE TABLE contact_info_blocks (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   icon_name VARCHAR(60) NOT NULL, label VARCHAR(80) NOT NULL, value_text TEXT NOT NULL, sort_order INT NOT NULL DEFAULT 0,
