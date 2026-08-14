@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/uploads.php';
 
 /**
  * Generic reorder/add/edit/delete handler + renderer for the simple repeatable
@@ -27,16 +28,32 @@ function fam_render_crud_page(array $config): void
             $action = $_POST['action'] ?? '';
 
             if ($action === 'add' || $action === 'edit') {
+                $oldRow = null;
+                if ($action === 'edit') {
+                    $oldStmt = $pdo->prepare("SELECT * FROM {$table} WHERE id = ?");
+                    $oldStmt->execute([(int) ($_POST['id'] ?? 0)]);
+                    $oldRow = $oldStmt->fetch() ?: null;
+                }
+
                 $cols = [];
                 $vals = [];
                 foreach ($fields as $col => $spec) {
                     $raw = trim($_POST[$col] ?? '');
                     if ($spec['type'] === 'number') {
                         $vals[$col] = ($raw === '') ? null : (int) $raw;
+                    } elseif ($spec['type'] === 'image') {
+                        $upload = fam_handle_image_upload("img_upload__{$col}");
+                        if ($upload['error'] !== null) {
+                            $error = "{$spec['label']}: {$upload['error']}";
+                        } elseif ($upload['path'] !== null) {
+                            $vals[$col] = $upload['path'];
+                        } else {
+                            $vals[$col] = $raw;
+                        }
                     } else {
                         $vals[$col] = $raw;
                     }
-                    if (!empty($spec['required']) && $vals[$col] === '') {
+                    if ($error === null && !empty($spec['required']) && ($vals[$col] ?? '') === '') {
                         $error = "{$spec['label']} is required.";
                     }
                     $cols[] = $col;
@@ -57,13 +74,33 @@ function fam_render_crud_page(array $config): void
                         $stmt = $pdo->prepare("UPDATE {$table} SET {$setSql} WHERE id = ?");
                         $stmt->execute([...array_values($vals), $id]);
                         $saved = true;
+
+                        if ($oldRow) {
+                            foreach ($fields as $col => $spec) {
+                                if ($spec['type'] === 'image') {
+                                    fam_cleanup_old_upload($oldRow[$col] ?? null, $vals[$col] ?? null);
+                                }
+                            }
+                        }
                     }
                 }
             } elseif ($action === 'delete') {
                 $id = (int) ($_POST['id'] ?? 0);
+                $rowStmt = $pdo->prepare("SELECT * FROM {$table} WHERE id = ?");
+                $rowStmt->execute([$id]);
+                $row = $rowStmt->fetch() ?: null;
+
                 $stmt = $pdo->prepare("DELETE FROM {$table} WHERE id = ?");
                 $stmt->execute([$id]);
                 $saved = true;
+
+                if ($row) {
+                    foreach ($fields as $col => $spec) {
+                        if ($spec['type'] === 'image') {
+                            fam_cleanup_old_upload($row[$col] ?? null, null);
+                        }
+                    }
+                }
             } elseif ($action === 'move_up' || $action === 'move_down') {
                 $id = (int) ($_POST['id'] ?? 0);
                 $cur = $pdo->prepare("SELECT id, sort_order FROM {$table} WHERE id = ?");
@@ -179,7 +216,7 @@ function fam_render_crud_page(array $config): void
 
     <div id="famForm" class="bg-surface-bright border border-outline-variant p-6 max-w-2xl scroll-mt-24">
       <h2 class="text-lg font-semibold text-primary mb-4"><?= $editRow ? 'Edit Row' : 'Add New' ?></h2>
-      <form method="post" class="grid gap-4">
+      <form method="post" enctype="multipart/form-data" class="grid gap-4">
         <?= fam_csrf_field() ?>
         <input type="hidden" name="action" value="<?= $editRow ? 'edit' : 'add' ?>">
         <?php if ($editRow): ?>
@@ -206,9 +243,10 @@ function fam_render_crud_page(array $config): void
                   <img id="preview_<?= $col ?>" src="<?= htmlspecialchars((string) $val, ENT_QUOTES, 'UTF-8') ?>" alt="" class="w-full h-full object-cover <?= $val === '' ? 'hidden' : '' ?>">
                   <span data-preview-placeholder class="text-on-surface-variant/50 <?= $val !== '' ? 'hidden' : '' ?>"><?= fam_icon('image-off', 'w-6 h-6') ?></span>
                 </div>
-                <input type="text" id="field_<?= $col ?>" name="<?= $col ?>" value="<?= htmlspecialchars((string) $val, ENT_QUOTES, 'UTF-8') ?>" placeholder="images/example.jpg or https://..." data-preview-target="preview_<?= $col ?>" <?= !empty($spec['required']) ? 'required aria-required="true"' : '' ?> class="flex-1 h-10 border border-outline-variant px-3 focus-visible:border-secondary">
+                <input type="text" id="field_<?= $col ?>" name="<?= $col ?>" value="<?= htmlspecialchars((string) $val, ENT_QUOTES, 'UTF-8') ?>" placeholder="images/example.jpg or https://..." data-preview-target="preview_<?= $col ?>" class="flex-1 h-10 border border-outline-variant px-3 focus-visible:border-secondary">
               </div>
-              <p class="text-xs text-on-surface-variant/70 mt-1">Paste an image path or URL — a real upload button is coming in a later update.</p>
+              <input type="file" name="img_upload__<?= $col ?>" accept="image/png,image/jpeg,image/webp" data-preview-target="preview_<?= $col ?>" class="mt-2 block w-full text-sm text-on-surface-variant file:mr-3 file:py-2 file:px-3 file:border-0 file:bg-surface-dim file:text-on-surface file:cursor-pointer">
+              <p class="text-xs text-on-surface-variant/70 mt-1">Upload a JPEG, PNG, or WebP (max 5 MB) — or paste a path/URL above. Uploading takes precedence if both are filled in.</p>
             <?php else: ?>
               <input type="<?= $spec['type'] === 'number' ? 'number' : 'text' ?>" id="field_<?= $col ?>" name="<?= $col ?>" value="<?= htmlspecialchars((string) $val, ENT_QUOTES, 'UTF-8') ?>" <?= !empty($spec['required']) ? 'required aria-required="true"' : '' ?> class="w-full h-10 border border-outline-variant px-3 focus-visible:border-secondary">
             <?php endif; ?>

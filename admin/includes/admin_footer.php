@@ -41,27 +41,52 @@
     });
 
     // Live image preview: any input with data-preview-target updates the matching <img>.
+    // Text inputs preview by URL/path; file inputs preview via an object URL and take
+    // priority while a file is selected (matches the server's upload-takes-precedence rule).
+    var famPreviewGroups = {};
     document.querySelectorAll('[data-preview-target]').forEach(function (input) {
-      var img = document.getElementById(input.dataset.previewTarget);
+      var key = input.dataset.previewTarget;
+      if (!famPreviewGroups[key]) famPreviewGroups[key] = [];
+      famPreviewGroups[key].push(input);
+    });
+
+    Object.keys(famPreviewGroups).forEach(function (key) {
+      var img = document.getElementById(key);
       var placeholder = img ? img.parentElement.querySelector('[data-preview-placeholder]') : null;
       if (!img) return;
 
-      function update() {
-        var val = input.value.trim();
-        if (!val) {
+      var inputs = famPreviewGroups[key];
+      var textInput = inputs.find(function (i) { return i.type !== 'file'; });
+      var fileInput = inputs.find(function (i) { return i.type === 'file'; });
+      var objectUrl = null;
+
+      function show(src) {
+        if (!src) {
           img.classList.add('hidden');
           if (placeholder) placeholder.classList.remove('hidden');
           return;
         }
-        img.src = val;
+        img.src = src;
         img.classList.remove('hidden');
         if (placeholder) placeholder.classList.add('hidden');
       }
+
+      function update() {
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+          if (objectUrl) URL.revokeObjectURL(objectUrl);
+          objectUrl = URL.createObjectURL(fileInput.files[0]);
+          show(objectUrl);
+          return;
+        }
+        show(textInput ? textInput.value.trim() : '');
+      }
+
       img.addEventListener('error', function () {
         img.classList.add('hidden');
         if (placeholder) placeholder.classList.remove('hidden');
       });
-      input.addEventListener('input', update);
+      if (textInput) textInput.addEventListener('input', update);
+      if (fileInput) fileInput.addEventListener('change', update);
       update();
     });
   </script>

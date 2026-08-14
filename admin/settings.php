@@ -1,8 +1,11 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/uploads.php';
 
 fam_require_login();
+
+$settings = fetchSettings();
 
 // Grouped into sections purely for admin readability — all columns still live on the single site_settings row.
 $sections = [
@@ -70,8 +73,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $vals = [];
         foreach ($fields as $col => $spec) {
             $cols[] = $col;
-            $vals[$col] = trim($_POST[$col] ?? '');
-            if (!empty($spec['required']) && $vals[$col] === '') {
+            $raw = trim($_POST[$col] ?? '');
+            if ($spec['type'] === 'image') {
+                $upload = fam_handle_image_upload("img_upload__{$col}");
+                if ($upload['error'] !== null) {
+                    $error = "{$spec['label']}: {$upload['error']}";
+                } elseif ($upload['path'] !== null) {
+                    $vals[$col] = $upload['path'];
+                } else {
+                    $vals[$col] = $raw;
+                }
+            } else {
+                $vals[$col] = $raw;
+            }
+            if ($error === null && !empty($spec['required']) && ($vals[$col] ?? '') === '') {
                 $error = "{$spec['label']} is required.";
             }
         }
@@ -86,15 +101,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $vals['contact_recipient_email'] = implode(', ', $addrs);
         }
         if (!$error) {
+            $oldSettings = $settings;
             $setSql = implode(', ', array_map(fn($c) => "{$c} = ?", $cols));
             $stmt = fam_db()->prepare("UPDATE site_settings SET {$setSql} WHERE id = 1");
             $stmt->execute(array_values($vals));
             $saved = true;
+
+            foreach ($fields as $col => $spec) {
+                if ($spec['type'] === 'image') {
+                    fam_cleanup_old_upload($oldSettings[$col] ?? null, $vals[$col] ?? null);
+                }
+            }
+
+            $settings = fetchSettings();
         }
     }
 }
 
-$settings = fetchSettings();
 $famPageTitle = 'Settings';
 
 require __DIR__ . '/includes/admin_header.php';
@@ -113,7 +136,7 @@ require __DIR__ . '/includes/admin_header.php';
   </div>
 <?php endif; ?>
 
-<form method="post" class="max-w-2xl">
+<form method="post" enctype="multipart/form-data" class="max-w-2xl">
   <?= fam_csrf_field() ?>
 
   <?php foreach ($sections as $sectionTitle => $sectionFields): ?>
@@ -137,7 +160,8 @@ require __DIR__ . '/includes/admin_header.php';
                 </div>
                 <input type="text" id="field_<?= $col ?>" name="<?= $col ?>" value="<?= htmlspecialchars((string) $val, ENT_QUOTES, 'UTF-8') ?>" placeholder="images/example.jpg or https://..." data-preview-target="preview_<?= $col ?>" class="flex-1 h-10 border border-outline-variant px-3 focus-visible:border-secondary">
               </div>
-              <p class="text-xs text-on-surface-variant/70 mt-1">Paste an image path or URL — a real upload button is coming in a later update.</p>
+              <input type="file" name="img_upload__<?= $col ?>" accept="image/png,image/jpeg,image/webp" data-preview-target="preview_<?= $col ?>" class="mt-2 block w-full text-sm text-on-surface-variant file:mr-3 file:py-2 file:px-3 file:border-0 file:bg-surface-dim file:text-on-surface file:cursor-pointer">
+              <p class="text-xs text-on-surface-variant/70 mt-1">Upload a JPEG, PNG, or WebP (max 5 MB) — or paste a path/URL above. Uploading takes precedence if both are filled in.</p>
             <?php else: ?>
               <input type="<?= htmlspecialchars($spec['type'], ENT_QUOTES, 'UTF-8') ?>" id="field_<?= $col ?>" name="<?= $col ?>" value="<?= htmlspecialchars((string) $val, ENT_QUOTES, 'UTF-8') ?>" <?= !empty($spec['required']) ? 'required aria-required="true"' : '' ?> class="w-full h-10 border border-outline-variant px-3 focus-visible:border-secondary">
               <?php if (!empty($spec['hint'])): ?><p class="text-xs text-on-surface-variant/70 mt-1"><?= htmlspecialchars($spec['hint'], ENT_QUOTES, 'UTF-8') ?></p><?php endif; ?>
